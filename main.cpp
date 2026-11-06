@@ -248,23 +248,33 @@ public:
     }
     
 
-    void addBlood(string bloodGroup, int units) {
-        if (inventory.find(bloodGroup) != inventory.end()) {
-            inventory[bloodGroup] += units;
+    bool addBlood(const string& bloodGroup, int units) {
+        if (units <= 0) {
+            return false;
         }
-    }
-    
 
-    bool removeBlood(string bloodGroup, int units) {
-        if (inventory.find(bloodGroup) != inventory.end()) {
-            if (inventory[bloodGroup] >= units) {
-                inventory[bloodGroup] -= units;
-                return true;
-            }
+        auto it = inventory.find(bloodGroup);
+        if (it == inventory.end()) {
+            return false;
         }
-        return false;
+
+        it->second += units;
+        return true;
     }
-    
+
+    bool removeBlood(const string& bloodGroup, int units) {
+        if (units <= 0) {
+            return false;
+        }
+
+        auto it = inventory.find(bloodGroup);
+        if (it == inventory.end() || it->second < units) {
+            return false;
+        }
+
+        it->second -= units;
+        return true;
+    }
 
 
     int checkStock(string bloodGroup) {
